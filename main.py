@@ -1,16 +1,17 @@
-from ast import Str
-import json
+import sys
 from typing import Dict, List
 
-import requests
 import yaml
 
 from src.functions import do_step
 
 if __name__ == '__main__':
+    yaml_dir = sys.argv[1]
+
     print('----------------')
     print('Test beginned...')
-    file = open('tests/steps.yaml', 'r').read()
+    print(f'Loading test from: {yaml_dir}')
+    file = open(f'{yaml_dir}/steps.yaml', 'r').read()
     print('Loaded file')
     yaml_file = yaml.safe_load(file)
     print('Serialized yaml file')
@@ -19,17 +20,29 @@ if __name__ == '__main__':
     assert 'steps' in yaml_file
     assert 'url' in yaml_file
     steps: List[Dict] = yaml_file['steps']
-    url: List[Str] = yaml_file['url']
+    url: List[str] = yaml_file['url']
     headers: dict = yaml_file['headers']
 
-    for index, step in enumerate(steps):
-        do_step(step['forward'], index, url, headers)
+    for index, step in enumerate(steps): 
+        if 'template' in step:
+            template_file_name = step['template']
+            template_file = open(f'{yaml_dir}/{template_file_name}', 'r').read()
+            forward = yaml.safe_load(template_file)['forward']
+        else:
+            forward = step['forward']
+        do_step(forward, index, url, headers)
     
     print('Rolling back')
     print('----------------')
     
     for index, step in enumerate(reversed(steps)):
-        do_step(step['rollback'], index, url, headers, 'rollback')
+        if 'template' in step:
+            template_file_name = step['template']
+            template_file = open(f'{yaml_dir}/{template_file_name}', 'r').read()
+            rollback = yaml.safe_load(template_file)['rollback']
+        else:
+            rollback = step['rollback']
+        do_step(rollback, index, url, headers, 'rollback')
         
     print('Completed 🎉')
     print('')
