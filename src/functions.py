@@ -12,7 +12,7 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
     endpoint: str = data['endpoint']
     method: str = data['method']
     expected_status: int = data['httpStatus']
-    payload: dict = data['payload']
+    payload: dict = data.get('payload')
     result: str = '✅ Success'
     failed_reason: str = ''
     endpoint_url = f'{url}{endpoint}'
@@ -29,10 +29,10 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
     elapsed_request_time = perf_counter() - start_request_time
     elapsed_request_time = "{:.2f}".format(elapsed_request_time)
     
-    expected_status = response.status_code == expected_status
+    as_expected = response.status_code == expected_status
     result = '❌ failed' if not expected_status else result
     failed_reason = (
-      '' if expected_status 
+      '' if not as_expected
       else f'Expected {expected_status} received {response.status_code} instead.'
     )
     
