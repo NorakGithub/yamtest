@@ -21,7 +21,7 @@ if __name__ == '__main__':
     assert 'url' in yaml_file
     steps: List[Dict] = yaml_file['steps']
     url: List[str] = yaml_file['url']
-    headers: dict = yaml_file['headers']
+    headers: dict = yaml_file.get('headers')
 
     for index, step in enumerate(steps): 
         if 'template' in step:
