@@ -24,12 +24,16 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
     if method.lower() == 'delete':
         response = requests.delete(endpoint_url, headers=headers)
     elapsed_request_time = perf_counter() - start_request_time
+    elapsed_request_time = "{:.2f}".format(elapsed_request_time)
     
     expected_status = response.status_code == expected_status
     result = '❌ failed' if not expected_status else result
-    failed_reason = '' if expected_status else  f'Expected {expected_status} received {response.status_code} instead.'
+    failed_reason = (
+      '' if expected_status 
+      else f'Expected {expected_status} received {response.status_code} instead.'
+    )
     
-    print(result, f'({elapsed_request_time} s)')
+    print(result, f'({elapsed_request_time}s)')
     if (failed_reason):
         print(failed_reason)
         print(f'Response: {response.json()}')
