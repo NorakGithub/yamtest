@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     print('----------------')
     print('Test beginned...')
-    print(f'Loading test from: {yaml_dir}')
+    print(f'Loading test from directory: {yaml_dir}')
     file = open(f'{yaml_dir}/steps.yaml', 'r').read()
     print('Loaded file')
     yaml_file = yaml.safe_load(file)
