@@ -15,7 +15,7 @@ forward:
     locality: ''
     province: ''
     countryCode: ''
-    mfaRequired: true
+    mfaRequired: false
 rollback:
   name: Delete child certificate
   method: 'delete'
