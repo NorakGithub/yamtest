@@ -10,30 +10,4 @@ steps:
   template: create-child-certificate.yml
 
 - step:
-  forward:
-    name: Sign PDF File
-    method: post
-    endpoint: sign-pdf/file
-    httpStatus: 200
-    payload:
-      identifiers: '2000,2001'
-      pdfPassword:
-      mfaToken:
-      signaturePosX: 100
-      signaturePosY: 100
-      signatureWidth: 200
-      signatureHeight: 200
-      signaturePageNum: 0
-      showSignature: true
-      extraMessages: Hello,World
-      extraMessagesFontSize: 14
-      extraMessageIsCenter: true
-      certified: false
-      locked: false
-      addedTimestamp: true
-      pdf:
-        type: file
-        path: tests/sample.pdf
-      signature:
-        type: file
-        path: tests/signature.png
+  template: sign-pdf.yml
