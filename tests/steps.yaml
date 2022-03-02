@@ -1,13 +1,17 @@
-url: https://suite.c0d1um.io/api/v2/
-headers:
-  x-api-key: 6c72b1daeadd4dcc992d44c4a7ec48a0.ME7jgRBg9TO4tbWje33LK5hTDH9hhhiFlXZYv1Vgw7CF8wGCe3UtqBTeZc5Sboex
+url: https://621f378e311a70591404cb3e.mockapi.io/api/v1/
 
 steps:
 - step:
-  template: create-root-certificate.yml
-
-- step:
-  template: create-child-certificate.yml
-
-- step:
-  template: sign-pdf.yml
+  forward:
+    name: Create User
+    method: get
+    endpoint: users
+    httpStatus: 200
+    payload:
+      name: 'John Apple'
+      avatar: 'Tiger'
+  rollback:
+    name: Delete user
+    method: delete
+    endpoint: users/1
+    httpStatus: 200
