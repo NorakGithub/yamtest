@@ -1,0 +1,24 @@
+forward:
+  name: Create child certificate
+  method: post
+  endpoint: certificates
+  httpStatus: 201
+  payload:
+    allowChains: false
+    parentIdentifier: '2000'
+    expirationDate: '2022-12-31'
+    identifier: '2001'
+    size: 2048
+    commonName: test_child_2001
+    organization: ''
+    organizationUnit: ''
+    locality: ''
+    province: ''
+    countryCode: ''
+    mfaRequired: true
+rollback:
+  name: Delete child certificate
+  method: 'delete'
+  endpoint: certificates/2001
+  httpStatus: 204
+  payload: null
