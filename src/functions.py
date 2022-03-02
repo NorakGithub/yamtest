@@ -1,4 +1,7 @@
-from datetime import timedelta
+from email import header
+from fileinput import filename
+import json
+from operator import mod
 import requests
 
 from time import perf_counter
@@ -20,7 +23,7 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
     if method.lower() == 'get':
         response = requests.get(endpoint_url, headers=headers)
     if method.lower() == 'post':
-        response = requests.post(endpoint_url, headers=headers, json=payload)
+        response = post_request(endpoint_url, headers, payload)
     if method.lower() == 'delete':
         response = requests.delete(endpoint_url, headers=headers)
     elapsed_request_time = perf_counter() - start_request_time
@@ -38,3 +41,40 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
         print(failed_reason)
         print(f'Response: {response.json()}')
     print('----------------')
+
+
+def post_request(url: str, headers: dict, payload: dict):
+    mode = 'json'
+    file_keys = []
+    files = []
+    for key in payload.keys():
+        if not isinstance(payload[key], dict):
+            continue
+        if payload[key]['type'].lower() != 'file':
+            continue
+        mode = 'multi-part'
+        filepath: str = payload[key]['path']
+        mimetype: str = payload[key]['mimetype']
+        filename: str = filepath.split('/')[-1]
+        file_keys.append(key)
+        files.append(
+          (key, (filename, open(filepath, 'rb'), mimetype))
+        )
+    for key in file_keys:
+        payload.pop(key)
+    
+    if mode == 'multi-part':
+        response = requests.post(
+            url=url,
+            headers=headers,
+            data=payload,
+            files=files,
+        )
+    else:
+        response = requests.post(
+            url=url,
+            headers=headers,
+            json=payload,
+        )
+    
+    return response
