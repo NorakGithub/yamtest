@@ -39,9 +39,15 @@ if __name__ == '__main__':
         if 'template' in step:
             template_file_name = step['template']
             template_file = open(f'{yaml_dir}/{template_file_name}', 'r').read()
-            rollback = yaml.safe_load(template_file)['rollback']
+            try:
+                rollback = yaml.safe_load(template_file)['rollback']
+            except KeyError:
+                continue
         else:
-            rollback = step['rollback']
+            try:
+                rollback = step['rollback']
+            except KeyError:
+                continue
         do_step(rollback, index, url, headers, 'rollback')
         
     print('Completed 🎉')
