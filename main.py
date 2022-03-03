@@ -9,7 +9,7 @@ if __name__ == '__main__':
     yaml_dir = sys.argv[1]
 
     print('----------------')
-    print('Test beginned...')
+    print('Started...')
     print(f'Loading test from directory: {yaml_dir}')
     file = open(f'{yaml_dir}/steps.yaml', 'r').read()
     print('Loaded file')
@@ -30,10 +30,9 @@ if __name__ == '__main__':
             forward = yaml.safe_load(template_file)['forward']
         else:
             forward = step['forward']
-        do_step(forward, index, url, headers)
+        do_step(forward, index, url, headers, '⏭')
     
-    print('Rolling back')
-    print('----------------')
+    print('\nRoll back\n----------------')
     
     for index, step in enumerate(reversed(steps)):
         if 'template' in step:
@@ -48,7 +47,7 @@ if __name__ == '__main__':
                 rollback = step['rollback']
             except KeyError:
                 continue
-        do_step(rollback, index, url, headers, 'rollback')
+        do_step(rollback, index, url, headers, '⏮', 'rollback')
         
     print('Completed 🎉')
     print('')

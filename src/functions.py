@@ -8,7 +8,7 @@ import requests
 from time import perf_counter
 
 
-def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
+def do_step(data: dict, index: int, url: str, headers: dict, emoji: str, mode='forward'):
     name: str = data['name']
     endpoint: str = data['endpoint']
     method: str = data['method']
@@ -18,7 +18,7 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
     failed_reason: str = ''
     endpoint_url = f'{url}{endpoint}'
 
-    print(f'> Step {mode} {index + 1}: {name}')
+    print(f'{emoji}  {name}')
     
     start_request_time = perf_counter()
     if method.lower() == 'get':
