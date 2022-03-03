@@ -2,6 +2,7 @@ from email import header
 from fileinput import filename
 import json
 from operator import mod
+import sys
 import requests
 
 from time import perf_counter
@@ -44,6 +45,7 @@ def do_step(data: dict, index: int, url: str, headers: dict, mode='forward'):
 
 
 def post_request(url: str, headers: dict, payload: dict):
+    yaml_dir = sys.argv[1]
     mode = 'json'
     file_keys = []
     files = []
@@ -53,7 +55,7 @@ def post_request(url: str, headers: dict, payload: dict):
         if payload[key]['type'].lower() != 'file':
             continue
         mode = 'multi-part'
-        filepath: str = payload[key]['path']
+        filepath: str = f"{yaml_dir}/{payload[key]['path']}"
         mimetype: str = payload[key]['mimetype']
         filename: str = filepath.split('/')[-1]
         file_keys.append(key)
