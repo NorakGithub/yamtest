@@ -1,7 +1,3 @@
-from email import header
-from fileinput import filename
-import json
-from operator import mod
 import sys
 import requests
 
@@ -15,7 +11,6 @@ def do_step(data: dict, index: int, url: str, headers: dict, emoji: str, mode='f
     expected_status: int = data['httpStatus']
     payload: dict = data.get('payload')
     result: str = '✅ Success'
-    failed_reason: str = ''
     endpoint_url = f'{url}{endpoint}'
 
     print(f'{emoji}  {name}')
@@ -38,7 +33,7 @@ def do_step(data: dict, index: int, url: str, headers: dict, emoji: str, mode='f
     )
     
     print(result, f'({elapsed_request_time}s)')
-    if (failed_reason):
+    if failed_reason:
         print(failed_reason)
         print(f'Response: {response.json()}')
     print('----------------')
