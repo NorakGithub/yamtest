@@ -1,26 +1,31 @@
 import sys
 from typing import Dict, List
-
+from termcolor import colored
 import yaml
 
 from src.functions import do_step
 
+
+global global_variables
+
+
 if __name__ == '__main__':
+    global_variables = {}
     yaml_dir = sys.argv[1]
 
     print('----------------')
-    print('Started...')
-    print(f'Loading test from directory: {yaml_dir}')
+    print(colored('Started...', 'green'))
+    print(colored(f'Loading test from directory: {yaml_dir}', 'blue'))
     file = open(f'{yaml_dir}/steps.yaml', 'r').read()
-    print('Loaded file')
+    print(colored('Loaded file', 'green'))
     yaml_file = yaml.safe_load(file)
-    print('Serialized yaml file')
+    print(colored('Serialized yaml file', 'green'))
     print('----------------')
     
     assert 'steps' in yaml_file
     assert 'url' in yaml_file
     steps: List[Dict] = yaml_file['steps']
-    url: List[str] = yaml_file['url']
+    url: str = yaml_file['url']
     headers: dict = yaml_file.get('headers')
 
     for index, step in enumerate(steps): 
@@ -30,7 +35,7 @@ if __name__ == '__main__':
             forward = yaml.safe_load(template_file)['forward']
         else:
             forward = step['forward']
-        do_step(forward, index, url, headers, '⏭')
+        do_step(forward, url, headers, global_variables)
     
     print('\nRoll back\n----------------')
     
@@ -47,7 +52,7 @@ if __name__ == '__main__':
                 rollback = step['rollback']
             except KeyError:
                 continue
-        do_step(rollback, index, url, headers, '⏮', 'rollback')
+        do_step(rollback, url, headers, global_variables)
         
-    print('Completed 🎉')
+    print('Finished')
     print('')
