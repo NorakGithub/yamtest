@@ -1,9 +1,11 @@
 FROM python:3.8-alpine
 
-COPY requirements.txt .
-RUN mkdir yamls && pip install --no-cache-dir -r requirements.txt
+RUN mkdir yamtest && mkdir app
+COPY requirements.txt yamtest
+RUN pip install --no-cache-dir -r /yamtest/requirements.txt
 
-COPY src src
-COPY main.py .
+COPY src /yamtest/src
+COPY main.py /yamtest
+WORKDIR app
 
-CMD ["python", "main.py", "yamls"]
+CMD ["python", "/yamtest/main.py", "/app"]
