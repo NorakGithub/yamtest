@@ -67,6 +67,8 @@ def do_step(
     print('Elapsed time:', f'{elapsed_request_time}s')
     print('----------------')
 
+    return assertion_succeed
+
 
 def post_request(url: str, headers: dict, payload: dict, global_variables: dict):
     yaml_dir = sys.argv[1]

@@ -28,6 +28,7 @@ if __name__ == '__main__':
     url: str = yaml_file['url']
     headers: dict = yaml_file.get('headers')
 
+    failed_index = len(steps)
     for index, step in enumerate(steps): 
         if 'template' in step:
             template_file_name = step['template']
@@ -35,11 +36,17 @@ if __name__ == '__main__':
             forward = yaml.safe_load(template_file)['forward']
         else:
             forward = step['forward']
-        do_step(forward, url, headers, global_variables)
+        succeed = do_step(forward, url, headers, global_variables)
+        if not succeed:
+            failed_index = index
+            print('Skipped other test')
+            break
     
     print('\nRoll back\n----------------')
     
     for index, step in enumerate(reversed(steps)):
+        if index < (len(steps) - failed_index) - 1:
+            continue
         if 'template' in step:
             template_file_name = step['template']
             template_file = open(f'{yaml_dir}/{template_file_name}', 'r').read()
@@ -54,5 +61,12 @@ if __name__ == '__main__':
                 continue
         do_step(rollback, url, headers, global_variables)
         
-    print('Finished')
+    print(
+        'Finished with status:',
+        colored('failed', 'red')
+        if failed_index != len(steps)
+        else colored('success', 'green')
+    )
     print('')
+    if failed_index != len(steps):
+        sys.exit(0)
